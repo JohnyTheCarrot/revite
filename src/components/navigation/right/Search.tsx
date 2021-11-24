@@ -110,6 +110,7 @@ export function SearchSidebar({ close }: Props) {
                     </Overline>
                     <InputBox
                         value={query}
+                        focusOnLoad={true}
                         onKeyDown={(e) => e.key === "Enter" && search()}
                         onChange={(e) => setQuery(e.currentTarget.value)}
                     />

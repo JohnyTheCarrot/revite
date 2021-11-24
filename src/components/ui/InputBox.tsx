@@ -1,10 +1,13 @@
 import styled, { css } from "styled-components";
+import {useEffect, useRef} from "preact/compat";
+import {RefObject} from "preact";
 
 interface Props {
     readonly contrast?: boolean;
+    focusOnLoad?: boolean;
 }
 
-export default styled.input<Props>`
+const InputBoxBase = styled.input<Props>`
     z-index: 1;
     font-size: 1rem;
     padding: 8px 16px;
@@ -37,5 +40,17 @@ export default styled.input<Props>`
             &:hover {
                 background: var(--hover);
             }
-        `}
+        `
+    }
 `;
+
+export default function InputBox(props: Props) {
+    const inputRef = useRef<HTMLInputElement>() as RefObject<HTMLInputElement>;
+
+    useEffect(() => {
+        if (props.focusOnLoad)
+            inputRef.current?.focus();
+    })
+
+    return <InputBoxBase {...props} ref={inputRef} />
+}

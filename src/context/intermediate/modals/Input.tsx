@@ -66,6 +66,7 @@ export function InputModal({
             )}
             <InputBox
                 value={value}
+                focusOnLoad={true}
                 onChange={(e) => setValue(e.currentTarget.value)}
             />
         </Modal>

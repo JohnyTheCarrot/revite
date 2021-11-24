@@ -388,6 +388,7 @@ export const SpecialPromptModal = observer((props: SpecialProps) => {
                                 <Text id="app.special.modals.prompt.confirm_ban_reason" />
                             </Overline>
                             <InputBox
+                                focusOnLoad={true}
                                 value={reason ?? ""}
                                 onChange={(e) =>
                                     setReason(e.currentTarget.value)
@@ -468,6 +469,7 @@ export const SpecialPromptModal = observer((props: SpecialProps) => {
                                 <Text id="app.main.servers.channel_name" />
                             </Overline>
                             <InputBox
+                                focusOnLoad={true}
                                 value={name}
                                 onChange={(e) => setName(e.currentTarget.value)}
                             />
@@ -526,6 +528,7 @@ export const SpecialPromptModal = observer((props: SpecialProps) => {
                                 <Text id="app.main.servers.category_name" />
                             </Overline>
                             <InputBox
+                                focusOnLoad={true}
                                 value={name}
                                 onChange={(e) => setName(e.currentTarget.value)}
                             />
