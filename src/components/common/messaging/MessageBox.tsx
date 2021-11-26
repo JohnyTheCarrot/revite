@@ -1,4 +1,4 @@
-import { Send, ShieldX } from "@styled-icons/boxicons-solid";
+import {HappyAlt, Send, ShieldX} from "@styled-icons/boxicons-solid";
 import Axios, { CancelTokenSource } from "axios";
 import { observer } from "mobx-react-lite";
 import { ChannelPermission } from "revolt.js/dist/api/permissions";
@@ -7,7 +7,12 @@ import styled, { css } from "styled-components";
 import { ulid } from "ulid";
 
 import { Text } from "preact-i18n";
-import { useCallback, useContext, useEffect, useState } from "preact/hooks";
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useState
+} from "preact/hooks";
 
 import TextAreaAutoSize from "../../../lib/TextAreaAutoSize";
 import { debounce } from "../../../lib/debounce";
@@ -39,6 +44,9 @@ import AutoComplete, { useAutoComplete } from "../AutoComplete";
 import { PermissionTooltip } from "../Tooltip";
 import FilePreview from "./bars/FilePreview";
 import ReplyBar from "./bars/ReplyBar";
+import EmojiPicker from "../../ui/EmojiPicker";
+import {RefObject} from "preact";
+import {Ref} from "preact/compat";
 
 type Props = {
     channel: Channel;
@@ -60,6 +68,7 @@ const Base = styled.div`
     display: flex;
     align-items: flex-start;
     background: var(--message-box);
+    position: relative;
 
     textarea {
         font-size: var(--text-size);
@@ -122,6 +131,8 @@ export default observer(({ channel }: Props) => {
     });
     const [typing, setTyping] = useState<boolean | number>(false);
     const [replies, setReplies] = useState<Reply[]>([]);
+    const [selectionPoint, setSelectionPoint] = useState<number>();
+    const [emojiPickerOpen, setEmojiPickerOpen] = useState<boolean>(false);
     const playSound = useContext(SoundContext);
     const { openScreen } = useIntermediate();
     const client = useContext(AppContext);
@@ -458,6 +469,14 @@ export default observer(({ channel }: Props) => {
                 setReplies={setReplies}
             />
             <Base>
+                {emojiPickerOpen && (
+                    <EmojiPicker
+                        draft={draft}
+                        setDraft={setDraft}
+                        selectionPoint={selectionPoint ?? draft.length}
+                        onCloseRequested={() => setEmojiPickerOpen(false)}
+                    />
+                )}
                 {channel.permission & ChannelPermission.UploadFiles ? (
                     <Action>
                         <FileUploader
@@ -505,6 +524,7 @@ export default observer(({ channel }: Props) => {
                     onKeyUp={onKeyUp}
                     value={draft ?? ""}
                     padding="var(--message-box-padding)"
+                    onSelectionChange={setSelectionPoint}
                     onKeyDown={(e) => {
                         if (e.ctrlKey && e.key === "Enter") {
                             e.preventDefault();
@@ -575,9 +595,9 @@ export default observer(({ channel }: Props) => {
                     onBlur={onBlur}
                 />
                 <Action>
-                    {/*<IconButton onClick={emojiPicker}>
+                    <IconButton onClick={() => setEmojiPickerOpen(true)}>
                         <HappyAlt size={20} />
-                </IconButton>*/}
+                    </IconButton>
                     <IconButton
                         className="mobile"
                         onClick={send}

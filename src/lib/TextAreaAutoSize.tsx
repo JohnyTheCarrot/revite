@@ -22,6 +22,7 @@ type TextAreaAutoSizeProps = Omit<
         id?: string;
 
         onChange?: (ev: JSX.TargetedEvent<HTMLTextAreaElement, Event>) => void;
+        onSelectionChange?: (point: number | undefined) => void;
     };
 
 const Container = styled.div`
@@ -64,6 +65,7 @@ export default function TextAreaAutoSize(props: TextAreaAutoSizeProps) {
         hideBorder,
         forceFocus,
         onChange,
+        onSelectionChange,
         ...textAreaProps
     } = props;
 
@@ -75,6 +77,21 @@ export default function TextAreaAutoSize(props: TextAreaAutoSizeProps) {
             ref.current.style.height = `${ghost.current.clientHeight}px`;
         }
     }, [ghost, props.value]);
+
+    useEffect(() => {
+        if (!ref.current)
+            return;
+
+        const { current } = ref;
+
+        current.onkeyup = current.onmouseup = () => {
+            onSelectionChange?.(current.selectionStart);
+        }
+
+        return () => {
+            current.onselectionchange = null;
+        }
+    }, [onSelectionChange, ref])
 
     useEffect(() => {
         if (isTouchscreenDevice) return;
